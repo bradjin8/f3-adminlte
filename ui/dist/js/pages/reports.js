@@ -131,6 +131,7 @@ function GetReport() {
                 }
             }
         });
+        console.log('columns', columns);
     }, null, false);
 
     //set the report header.
@@ -177,7 +178,7 @@ function GetReport() {
             ],
             'columns': columns,
             'ajax': $.fn.dataTable.pipeline({
-                url: '/api/reports.php',
+                url: '/f3-adminlte/api/reports.php',
                 data: function (d) {
                     d.method = 'IOT_GetReport';
                     d.report = $('#sel_report').val();
@@ -341,6 +342,7 @@ $.fn.dataTable.pipeline = function (opts) {
                         dt.data.splice(requestLength, dt.data.length);
                     }
 
+                    console.log('dt', dt)
                     drawCallback(dt);
                     if (json.message.summary) {
                         $(result_table.column(0).footer()).css("text-align", "right").html("Total");
@@ -364,14 +366,18 @@ $.fn.dataTable.pipeline = function (opts) {
     }
 };
 
-var request_method_list = "";
+var request_method_list = [
+    "IOT_GetReportsList",
+    "IOT_GetUsagePeriodicList",
+    "IOT_GetCustomerList"
+];
 var getFromAPI = function (dataparam, action, fail, is_async) {
     var request_method = dataparam.method;
     if (!request_method_list.includes(request_method)) {
         request_method_list += '<h5><strong>' + request_method + ' failed to load.</strong></h5>'
     }
     var maxtimeout = 180000;  //maxtimeout of 180 seconds (180 * 1000ms)
-    var baseurl = "/api/reports.php";
+    var baseurl = "/f3-adminlte/api/reports.php";
     if (is_async == null) is_async = true;
     $.ajax({
         method: 'GET',
@@ -400,7 +406,7 @@ var getFromAPI = function (dataparam, action, fail, is_async) {
 };
 
 if (typeof jQuery === "undefined") {
-   alert("AdminLTE requires jQuery");
+    alert("AdminLTE requires jQuery");
 }
 
 //load this at the start of each page.
